@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NFL 17-0</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div id="app">
+
+    <!-- HOME SCREEN -->
+    <section id="home-screen" class="screen active">
+      <div class="hero">
+        <div class="football">🏈</div>
+        <h1>NFL 17-0</h1>
+        <p>Build your team. Survive 17 games.</p>
+
+        <button class="primary-btn" onclick="showSetup()">
+          START GAME
+        </button>
+
+        <button class="secondary-btn" onclick="showHowToPlay()">
+          HOW TO PLAY
+        </button>
+      </div>
+    </section>
+
+    <!-- HOW TO PLAY -->
+    <section id="how-screen" class="screen">
+      <div class="page-header">
+        <button class="back-btn" onclick="showHome()">←</button>
+        <h2>How To Play</h2>
+      </div>
+
+      <div class="card">
+        <h3>The Draft</h3>
+        <p>
+          A random NFL franchise is generated. Choose one eligible player
+          from that franchise to fill one of your roster spots.
+        </p>
+
+        <p>
+          Once a franchise is used, it cannot appear again.
+          Once a player is drafted, that player cannot be drafted again.
+        </p>
+
+        <h3>Example</h3>
+        <p>
+          You receive the Cowboys and choose Roger Staubach.
+          The Cowboys are then removed from the draft pool.
+        </p>
+
+        <h3>Historical Players</h3>
+        <p>
+          Players can have multiple eligible positions. Historical players
+          are evaluated using their version with the franchise you drafted.
+        </p>
+      </div>
+    </section>
+
+    <!-- SETUP -->
+    <section id="setup-screen" class="screen">
+      <div class="page-header">
+        <button class="back-btn" onclick="showHome()">←</button>
+        <h2>Game Setup</h2>
+      </div>
+
+      <div class="card">
+        <h3>Draft Mode</h3>
+
+        <div class="mode-grid">
+          <button class="mode-btn selected" data-mode="alltime">
+            🏆<br>
+            <strong>All-Time</strong>
+            <small>Any player in franchise history</small>
+          </button>
+
+          <button class="mode-btn" data-mode="teamyear">
+            📅<br>
+            <strong>Team-Year</strong>
+            <small>Players from a specific season</small>
+          </button>
+
+          <button class="mode-btn" data-mode="era">
+            🕰️<br>
+            <strong>Era</strong>
+            <small>Players from a selected era</small>
+          </button>
+
+          <button class="mode-btn" data-mode="current">
+            ⚡<br>
+            <strong>Current</strong>
+            <small>Current NFL players only</small>
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Your Roster</h3>
+
+        <div class="position-row">
+          <span>QB</span>
+          <button onclick="changePosition('QB', -1)">−</button>
+          <strong id="count-QB">1</strong>
+          <button onclick="changePosition('QB', 1)">+</button>
+        </div>
+
+        <div class="position-row">
+          <span>RB</span>
+          <button onclick="changePosition('RB', -1)">−</button>
+          <strong id="count-RB">1</strong>
+          <button onclick="changePosition('RB', 1)">+</button>
+        </div>
+
+        <div class="position-row">
+          <span>WR</span>
+          <button onclick="changePosition('WR', -1)">−</button>
+          <strong id="count-WR">2</strong>
+          <button onclick="changePosition('WR', 1)">+</button>
+        </div>
+
+        <div class="position-row">
+          <span>TE</span>
+          <button onclick="changePosition('TE', -1)">−</button>
+          <strong id="count-TE">1</strong>
+          <button onclick="changePosition('TE', 1)">+</button>
+        </div>
+
+        <div class="position-row">
+          <span>FLEX</span>
+          <button onclick="changePosition('FLEX', -1)">−</button>
+          <strong id="count-FLEX">2</strong>
+          <button onclick="changePosition('FLEX', 1)">+</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Difficulty</h3>
+
+        <select id="difficulty">
+          <option value="rookie">Rookie — Show ratings & stats</option>
+          <option value="standard">Standard — Hide ratings</option>
+          <option value="expert">Expert — Minimal information</option>
+        </select>
+      </div>
+
+      <div class="card">
+        <h3>Draft Timer</h3>
+
+        <select id="timer-setting">
+          <option value="0">No Timer</option>
+          <option value="30">30 Seconds</option>
+          <option value="60">60 Seconds</option>
+          <option value="90">90 Seconds</option>
+        </select>
+      </div>
+
+      <button class="primary-btn" onclick="startGame()">
+        START DRAFT
+      </button>
+    </section>
+
+    <!-- DRAFT -->
+    <section id="draft-screen" class="screen">
+
+      <div class="draft-top">
+        <div>
+          <small>YOUR RECORD</small>
+          <strong id="draft-progress">0 / 7</strong>
+        </div>
+
+        <div class="timer-container">
+          <small>TIME</small>
+          <strong id="timer">—</strong>
+        </div>
+      </div>
+
+      <div class="team-banner">
+        <small>NEXT FRANCHISE</small>
+        <h1 id="current-team">DALLAS COWBOYS</h1>
+        <p id="current-team-subtitle">Choose one eligible player</p>
+      </div>
+
+      <div class="search-container">
+        <input
+          type="text"
+          id="player-search"
+          placeholder="Search eligible players..."
+          oninput="renderPlayers()"
+        >
+      </div>
+
+      <div id="player-list" class="player-list"></div>
+
+      <div class="draft-history-container">
+        <h3>Draft History</h3>
+        <div id="draft-history"></div>
+      </div>
+
+      <div class="roster-container">
+        <h3>Your Roster</h3>
+        <div id="current-roster"></div>
+      </div>
+
+    </section>
+
+    <!-- COMPLETE -->
+    <section id="complete-screen" class="screen">
+
+      <div class="hero">
+        <div class="football">🏆</div>
+        <h1>Roster Complete!</h1>
+        <p>You built your team.</p>
+      </div>
+
+      <div class="card">
+        <h2>Team Overview</h2>
+
+        <div class="rating-big">
+          <span>Overall</span>
+          <strong id="team-overall">—</strong>
+        </div>
+
+        <div id="final-roster"></div>
+      </div>
+
+      <button class="primary-btn" onclick="showSimulationPreview()">
+        SIMULATE 17–0 SEASON
+      </button>
+
+      <button class="secondary-btn" onclick="showSetup()">
+        NEW GAME
+      </button>
+
+    </section>
+
+    <!-- SIMULATION PREVIEW -->
+    <section id="simulation-screen" class="screen">
+
+      <div class="hero">
+        <div class="football">🏈</div>
+        <h1>Season Simulation</h1>
+        <p>17 games. Can your team go undefeated?</p>
+      </div>
+
+      <div class="card">
+        <h2>Challenge Mode</h2>
+
+        <button class="challenge-btn" onclick="simulateSeason('staircase')">
+          📈 Staircase
+          <small>Every opponent gets tougher.</small>
+        </button>
+
+        <button class="challenge-btn" onclick="simulateSeason('random')">
+          🎲 Random
+          <small>Opponents are randomly generated.</small>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- RESULTS -->
+    <section id="results-screen" class="screen">
+
+      <div class="hero">
+        <div id="result-icon" class="football">🏆</div>
+        <h1 id="result-title">SEASON COMPLETE</h1>
+        <p id="result-record">17–0</p>
+      </div>
+
+      <div class="card">
+        <h2>Season Statistics</h2>
+        <div id="season-stats"></div>
+      </div>
+
+      <div class="card">
+        <h2>Game-by-Game</h2>
+        <div id="game-results"></div>
+      </div>
+
+      <button class="primary-btn" onclick="showSetup()">
+        PLAY AGAIN
+      </button>
+
+    </section>
+
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
